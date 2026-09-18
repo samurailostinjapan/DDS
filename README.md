@@ -6,15 +6,18 @@ The GitHub Pages site is **demo hosting only**. The intended production version 
 
 ## What the demo includes
 
-- S Line, T Line, and combined performance views
-- Current-week and next-week selection
-- Weekly rollover behavior
-- Action Center with line ownership
-- CI project pipeline
-- Standards library mockup
-- SharePoint implementation map
+- Separate interactive S Line and T Line weekly boards
+- Full-day entry for all 13 control-board metrics, with editable individual cells
+- Schedule attainment shown as produced versus scheduled pallets for the selected line
+- First-shift, second-shift, current-week, and next-week filters
+- Clickable KPI details with direct action creation
+- Searchable Action Center with owner, urgency, and status workflows
+- CI opportunity submission and project stage progression
+- Standards search, preview, revision, upload, and demo download flows
+- Weekly rollover, history, sync, settings, app launcher, and profile controls
+- SharePoint implementation map for the production handoff
 
-Demo entries are stored only in the browser session and reset when the page is refreshed.
+Demo changes are stored in the local browser so they remain after a refresh. Use **Settings → Reset Demo Data** to restore the original sample state. This static demo does not provide a shared multi-user database.
 
 ## Publish with GitHub Pages
 
@@ -36,6 +39,5 @@ Replace `index.html`, `styles.css`, or `app.js` in the repository and commit the
 
 - `index.html` — page structure and visible demo content
 - `styles.css` — SharePoint-style layout and responsive design
-- `app.js` — line filters, action flow, and weekly rollover interactions
+- `app.js` — complete demo workflows, filtering, local persistence, and weekly rollover interactions
 - `.nojekyll` — tells GitHub Pages to serve the site as plain static files
-

@@ -9,12 +9,13 @@
 </head>
 <body>
   <header class="suite-bar">
-    <button class="waffle" aria-label="App launcher"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></button>
+    <button class="waffle" id="appLauncherBtn" aria-label="App launcher" aria-expanded="false"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></button>
     <div class="suite-name">SharePoint</div>
     <div class="suite-spacer"></div>
-    <button class="suite-icon" aria-label="Settings">⚙</button>
-    <div class="avatar">OP</div>
+    <button class="suite-icon" id="settingsBtn" aria-label="Settings">⚙</button>
+    <button class="avatar" id="profileBtn" aria-label="Open profile menu">OP</button>
   </header>
+  <div class="suite-popover" id="suitePopover" hidden></div>
 
   <div class="app-shell">
     <aside class="side-nav" id="sideNav">
@@ -29,10 +30,10 @@
         <button class="nav-item" data-view="sharepoint"><span>⌂</span> SharePoint Fit</button>
         <button class="nav-item" data-view="standards"><span>▤</span> Standards</button>
       </nav>
-      <div class="nav-footer">
+      <button class="nav-footer" id="syncBtn" type="button">
         <span class="sync-dot"></span>
         <div><strong>Last sync</strong><small>Today, 2:18 PM</small></div>
-      </div>
+      </button>
     </aside>
 
     <main>
@@ -45,7 +46,7 @@
           </div>
           <div class="head-actions">
             <label class="compact-select">Production line
-              <select id="lineSelect"><option value="all">S + T Lines</option><option value="S">S Line</option><option value="T">T Line</option></select>
+              <select id="lineSelect"><option value="S">S Line</option><option value="T">T Line</option></select>
             </label>
             <label class="compact-select">Week
               <select id="weekSelect"><option value="current">Sep 14–18</option><option value="next">Sep 21–25</option></select>
@@ -53,6 +54,7 @@
             <label class="compact-select">Shift
               <select id="shiftSelect"><option>All Shifts</option><option>1st Shift</option><option>2nd Shift</option></select>
             </label>
+            <button class="btn ghost" id="enterValuesBtn">＋ Enter daily values</button>
             <button class="btn ghost" id="presentBtn">◉ Present DDS</button>
             <button class="btn ghost" id="newWeekBtn">↻ Start new week</button>
             <button class="btn primary" id="addActionBtn">＋ New action</button>
@@ -66,17 +68,17 @@
         </div>
 
         <div class="status-strip" aria-label="Daily performance summary">
-          <article><div class="kpi-icon safe">S</div><div><span>Safety</span><strong>0 incidents</strong><small class="good">On target</small></div></article>
-          <article><div class="kpi-icon quality">Q</div><div><span>Quality</span><strong>1 trigger</strong><small class="warn">Watch</small></div></article>
-          <article><div class="kpi-icon delivery">D</div><div><span>Schedule</span><strong>104%</strong><small class="good">+4 pts</small></div></article>
-          <article><div class="kpi-icon cost">C</div><div><span>Overuse</span><strong>0.16%</strong><small class="good">Below 0.5%</small></div></article>
-          <article><div class="kpi-icon reliability">R</div><div><span>MTBF</span><strong>140 min</strong><small class="good">Above target</small></div></article>
+          <article><div class="kpi-icon safe">S</div><div><span>Safety</span><strong id="kpiSafety">0 incidents</strong><small class="good" id="kpiSafetyNote">On target</small></div></article>
+          <article><div class="kpi-icon quality">Q</div><div><span>Quality</span><strong id="kpiQuality">1 trigger</strong><small class="warn" id="kpiQualityNote">Watch</small></div></article>
+          <article><div class="kpi-icon delivery">D</div><div><span>Schedule</span><strong id="kpiSchedule">12 / 10 pallets</strong><small class="good" id="kpiScheduleNote">2 pallets ahead</small></div></article>
+          <article><div class="kpi-icon cost">C</div><div><span>Overuse</span><strong id="kpiOveruse">0.19%</strong><small class="good" id="kpiOveruseNote">Below 0.5%</small></div></article>
+          <article><div class="kpi-icon reliability">R</div><div><span>MTBF</span><strong id="kpiMtbf">132 min</strong><small class="good" id="kpiMtbfNote">Above target</small></div></article>
         </div>
 
         <div class="dashboard-grid">
           <section class="panel metrics-panel">
             <div class="panel-head">
-              <div><h2>Weekly control board <span class="line-chip" id="boardLineChip">S + T</span></h2><p>Actual against target · select an abnormal result to review</p></div>
+              <div><h2>Weekly control board <span class="line-chip" id="boardLineChip">S Line</span></h2><p>Select any cell to enter or review that day’s result</p></div>
               <div class="legend"><span><i class="dot green"></i>On target</span><span><i class="dot amber"></i>Watch</span><span><i class="dot red"></i>Action</span></div>
             </div>
             <div class="table-wrap">
@@ -89,7 +91,7 @@
 
           <aside class="focus-column">
             <section class="panel focus-card">
-              <div class="panel-head small"><div><p class="eyebrow">TODAY'S FOCUS</p><h2>Top stops & root cause</h2></div><button class="text-btn">View history</button></div>
+              <div class="panel-head small"><div><p class="eyebrow">TODAY'S FOCUS</p><h2>Top stops & root cause</h2></div><button class="text-btn" id="historyBtn">View history</button></div>
               <div class="stop-list">
                 <button class="stop-item" data-action="Bucket elevator chain"><span class="rank">1</span><div><strong>Bucket elevator chain</strong><small>18 min · 2 occurrences</small><p><b>Cause:</b> tension drift after changeover</p></div><span class="chev">›</span></button>
                 <button class="stop-item" data-action="Film registration"><span class="rank">2</span><div><strong>Film registration</strong><small>11 min · 3 occurrences</small><p><b>Cause:</b> splice detection delay</p></div><span class="chev">›</span></button>
@@ -108,8 +110,8 @@
 
             <section class="panel overdue-card">
               <div class="panel-head small"><div><p class="eyebrow red-text">ESCALATION</p><h2>Open more than 24 hours</h2></div><span class="pill red-pill">2 overdue</span></div>
-              <div class="overdue-row"><div class="age">3d</div><div><strong>Omega non-stop product fill</strong><small>Owner: Maintenance · Due Sep 14</small></div></div>
-              <div class="overdue-row"><div class="age">2d</div><div><strong>Refeed pan variation</strong><small>Owner: Process Eng. · Due Sep 15</small></div></div>
+              <button class="overdue-row overdue-action" data-action-name="Omega non-stop product fill"><div class="age">3d</div><div><strong>Omega non-stop product fill</strong><small>Owner: Maintenance · Due Sep 14</small></div></button>
+              <button class="overdue-row overdue-action" data-action-name="Refeed pan variation"><div class="age">2d</div><div><strong>Refeed pan variation</strong><small>Owner: Process Eng. · Due Sep 15</small></div></button>
             </section>
           </aside>
         </div>
@@ -117,20 +119,20 @@
 
       <section class="page" id="actions">
         <div class="page-head"><div><p class="eyebrow">FOLLOW-THROUGH</p><h1>Action Center</h1><p class="subtle">Every abnormality has an owner, deadline and verification.</p></div><button class="btn primary add-action">＋ New action</button></div>
-        <div class="filter-row"><button class="filter active">All actions <b>8</b></button><button class="filter">My actions <b>3</b></button><button class="filter">Overdue <b>2</b></button><button class="filter">Due today <b>3</b></button><span></span><input id="actionSearch" type="search" placeholder="Search actions"></div>
+        <div class="filter-row"><button class="filter active" data-filter="all">All actions <b id="allCount">8</b></button><button class="filter" data-filter="mine">My actions <b id="mineCount">3</b></button><button class="filter" data-filter="overdue">Overdue <b id="overdueCount">2</b></button><button class="filter" data-filter="today">Due today <b id="todayCount">3</b></button><span></span><input id="actionSearch" type="search" placeholder="Search actions"></div>
         <section class="panel action-table-panel">
           <table class="action-table"><thead><tr><th>Problem / Action</th><th>Line</th><th>Category</th><th>Owner</th><th>Due</th><th>Age</th><th>Status</th></tr></thead><tbody id="actionTableBody"></tbody></table>
         </section>
       </section>
 
       <section class="page" id="pipeline">
-        <div class="page-head"><div><p class="eyebrow">CONTINUOUS IMPROVEMENT</p><h1>CI Pipeline</h1><p class="subtle">From daily abnormality to verified permanent improvement.</p></div><button class="btn primary">＋ Submit opportunity</button></div>
+        <div class="page-head"><div><p class="eyebrow">CONTINUOUS IMPROVEMENT</p><h1>CI Pipeline</h1><p class="subtle">From daily abnormality to verified permanent improvement.</p></div><button class="btn primary" id="submitOpportunityBtn">＋ Submit opportunity</button></div>
         <div class="pipeline-summary"><div><span>Active projects</span><strong>7</strong></div><div><span>Annualized savings</span><strong>$184K</strong></div><div><span>Hours returned</span><strong>426</strong></div><div><span>Verified this quarter</span><strong>4</strong></div></div>
         <div class="kanban">
-          <section class="kanban-col"><header><span>BACKLOG</span><b>3</b></header><article><span class="tag quality-tag">QUALITY</span><h3>Reduce film-registration rejects</h3><p>Baseline: 2.4% reject rate</p><footer><span class="mini-avatar">AM</span><small>Impact: $32K</small></footer></article><article><span class="tag cost-tag">COST</span><h3>Ingredient overuse control limits</h3><p>Baseline: 0.48% average</p><footer><span class="mini-avatar">TR</span><small>Impact: $41K</small></footer></article></section>
-          <section class="kanban-col"><header><span>IN ANALYSIS</span><b>2</b></header><article><span class="tag reliability-tag">RELIABILITY</span><h3>Bucket elevator chain life</h3><p>Root-cause study · 3/5 checks complete</p><footer><span class="mini-avatar">CB</span><small>Due Sep 20</small></footer></article><article><span class="tag delivery-tag">DELIVERY</span><h3>Changeover handoff standard</h3><p>Observe next 3 changeovers</p><footer><span class="mini-avatar">JS</span><small>Due Sep 22</small></footer></article></section>
-          <section class="kanban-col"><header><span>IMPLEMENTING</span><b>1</b></header><article><span class="tag safe-tag">SAFETY</span><h3>Guard interlock visual check</h3><p>Pilot running on Omega line</p><div class="progress"><i style="width:68%"></i></div><footer><span class="mini-avatar">KL</span><small>68% complete</small></footer></article></section>
-          <section class="kanban-col"><header><span>VERIFYING</span><b>1</b></header><article><span class="tag reliability-tag">RELIABILITY</span><h3>Refeed pan flow standard</h3><p>14-day verification window</p><div class="spark-bars"><i style="height:70%"></i><i style="height:52%"></i><i style="height:43%"></i><i style="height:28%"></i><i style="height:20%"></i></div><footer><span class="mini-avatar">NW</span><small>Stops ↓ 61%</small></footer></article></section>
+          <section class="kanban-col" data-stage="Backlog"><header><span>BACKLOG</span><b>2</b></header><div class="kanban-cards" id="backlogCards"></div></section>
+          <section class="kanban-col" data-stage="In Analysis"><header><span>IN ANALYSIS</span><b>2</b></header><div class="kanban-cards" id="analysisCards"></div></section>
+          <section class="kanban-col" data-stage="Implementing"><header><span>IMPLEMENTING</span><b>1</b></header><div class="kanban-cards" id="implementingCards"></div></section>
+          <section class="kanban-col" data-stage="Verifying"><header><span>VERIFYING</span><b>1</b></header><div class="kanban-cards" id="verifyingCards"></div></section>
         </div>
       </section>
 
@@ -148,7 +150,7 @@
             <div class="system-core"><span class="system-icon">SP</span><small>EXISTING SITE</small><strong>Operations SharePoint</strong><p>Current navigation, company access and ownership</p></div>
             <div class="system-connectors" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
             <div class="system-parts">
-              <article><span>▦</span><div><small>SITE PAGE</small><strong>DDS dashboard</strong><p>S Line, T Line and combined views</p></div></article>
+              <article><span>▦</span><div><small>SITE PAGE</small><strong>DDS dashboard</strong><p>Separate S Line and T Line weekly boards</p></div></article>
               <article><span>≡</span><div><small>MICROSOFT LISTS</small><strong>Operational records</strong><p>Daily metrics, actions and CI pipeline</p></div></article>
               <article><span>↻</span><div><small>POWER AUTOMATE</small><strong>Workflow</strong><p>Weekly rollover, reminders and escalation</p></div></article>
               <article><span>▤</span><div><small>DOCUMENT LIBRARY</small><strong>Standards</strong><p>SOPs, one-point lessons and revisions</p></div></article>
@@ -180,8 +182,9 @@
       </section>
 
       <section class="page" id="standards">
-        <div class="page-head"><div><p class="eyebrow">CONTROL & SUSTAINMENT</p><h1>Standards Library</h1><p class="subtle">Current procedures, one-point lessons and verified countermeasures.</p></div><button class="btn primary">＋ Upload standard</button></div>
-        <div class="document-grid"><article><div class="doc-icon">SOP</div><div><h3>Packaging Line Changeover</h3><p>SOP-PAK-014 · Version 6</p><small>Updated Sep 15 · Owner: Operations</small></div></article><article><div class="doc-icon opl">OPL</div><div><h3>Bucket Elevator Chain Check</h3><p>OPL-MNT-027 · Version 2</p><small>Updated Sep 14 · Owner: Maintenance</small></div></article><article><div class="doc-icon fs">FS</div><div><h3>Food Safety Trigger Response</h3><p>SOP-QA-008 · Version 4</p><small>Updated Sep 9 · Owner: Quality</small></div></article><article><div class="doc-icon sop">SOP</div><div><h3>Film Splice Detection Challenge</h3><p>SOP-PAK-031 · Version 3</p><small>Updated Sep 7 · Owner: Engineering</small></div></article></div>
+        <div class="page-head"><div><p class="eyebrow">CONTROL & SUSTAINMENT</p><h1>Standards Library</h1><p class="subtle">Current procedures, one-point lessons and verified countermeasures.</p></div><button class="btn primary" id="uploadStandardBtn">＋ Upload standard</button></div>
+        <div class="library-tools"><input id="standardSearch" type="search" placeholder="Search standards"><select id="standardType"><option value="all">All types</option><option value="SOP">SOP</option><option value="OPL">OPL</option><option value="FS">Food safety</option></select></div>
+        <div class="document-grid" id="documentGrid"></div>
       </section>
     </main>
   </div>
@@ -192,13 +195,21 @@
       <form id="actionForm">
         <label class="full">Problem or abnormality<textarea id="problemInput" required placeholder="Describe what happened and where"></textarea></label>
         <label>Production line<select id="actionLine"><option>S</option><option>T</option></select></label>
-        <label>Category<select><option>Safety</option><option>Quality</option><option>Delivery</option><option>Cost</option><option>Reliability</option></select></label>
-        <label>Owner<select><option>CB · Maintenance</option><option>AM · Quality</option><option>JS · Operations</option><option>TR · Process Engineering</option></select></label>
-        <label>Due date<input type="date" value="2026-09-17"></label>
-        <label>Containment<input type="text" placeholder="Immediate control"></label>
-        <label class="full">Next action<input type="text" placeholder="What will the owner do next?"></label>
+        <label>Category<select id="actionCategory"><option>Safety</option><option>Quality</option><option>Delivery</option><option>Cost</option><option>Reliability</option></select></label>
+        <label>Owner<select id="actionOwner"><option value="CB|Maintenance">CB · Maintenance</option><option value="AM|Quality">AM · Quality</option><option value="JS|Operations">JS · Operations</option><option value="TR|Process Eng.">TR · Process Engineering</option></select></label>
+        <label>Due date<input id="actionDue" type="date" value="2026-09-18"></label>
+        <label>Containment<input id="actionContainment" type="text" placeholder="Immediate control"></label>
+        <label class="full">Next action<input id="actionNext" type="text" placeholder="What will the owner do next?"></label>
         <div class="form-actions"><button type="button" class="btn ghost" id="cancelBtn">Cancel</button><button class="btn primary" type="submit">Create action</button></div>
       </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="workspaceBackdrop" hidden>
+    <div class="modal workspace-modal" role="dialog" aria-modal="true" aria-labelledby="workspaceTitle">
+      <div class="modal-head"><div><p class="eyebrow" id="workspaceEyebrow">DETAIL</p><h2 id="workspaceTitle">Details</h2></div><button class="modal-close" id="workspaceClose" aria-label="Close">×</button></div>
+      <div class="workspace-body" id="workspaceBody"></div>
+      <div class="workspace-actions" id="workspaceActions"></div>
     </div>
   </div>
 
